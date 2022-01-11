@@ -1,0 +1,5 @@
+GOOFY!
+
+GOOFY GOOFY!
+
+git does not track empty files, so here this is!
