@@ -6,13 +6,14 @@ import java.sql.Statement;
 
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Bank {
-    static DecimalFormat df = new DecimalFormat("#.##");//this is to make sure outputs are only 2 decimal places
-
+    static DecimalFormat df = new DecimalFormat("#.00");//this is to make sure outputs are only 2 decimal places
+    static NumberFormat nf = NumberFormat.getInstance();
     //this code runs once you successfully log into the bank
     public static void insideTheBank(CustomArrayList<Account> active, int accountNumber, Connection TheLegendOfZeldaALinkToThePast) {
         System.out.println("You have successfully logged in!\n");
@@ -145,7 +146,10 @@ public class Bank {
             ResultSet newBalance = lookup.executeQuery("UPDATE test_purposes_only.Accounts\n" +
                     "SET Balance="+result+
                     "WHERE id="+accountNumber+";\n");
-            System.out.println("You have deposited $"+df.format(moneyComingIn)+".");//outputs the result to user
+            nf.setMaximumFractionDigits(2);
+            nf.setMinimumFractionDigits(2);
+            nf.setRoundingMode(RoundingMode.DOWN);
+            System.out.printf("You have deposited $"+nf.format(moneyComingIn)+".");//outputs the result to user
 
            // System.out.println("yay your code got here and your new balance is"+newBalance.getDouble("Balance"));
         } catch (SQLException e) {
@@ -189,7 +193,9 @@ public class Bank {
                ResultSet newBalance = lookup.executeQuery("UPDATE test_purposes_only.Accounts\n" +
                        "SET Balance="+result+
                        "WHERE id="+accountNumber+";\n");
-               System.out.println("You have withdrew $"+df.format(moneyGoingOut)+".");
+               nf.setMaximumFractionDigits(2);
+               nf.setMinimumFractionDigits(2);
+               System.out.println("You have withdrew $"+nf.format(moneyGoingOut)+".");
                transactionWriter(TheLegendOfZeldaALinkToThePast,rs,"Withdrew", accountNumber, moneyGoingOut);
            }
            // System.out.println("Your new balance is"+newBalance.getDouble("Balance"));
@@ -237,9 +243,12 @@ public class Bank {
             e.printStackTrace();
         }
         df.setRoundingMode(RoundingMode.DOWN);
+        nf.setMaximumFractionDigits(2);
+        nf.setMinimumFractionDigits(2);
+        nf.setRoundingMode(RoundingMode.DOWN);
         System.out.println("Hi "+name+"!\n"
                         +"Your account number is: "+id+"\n"
-                        +"You have $"+Double.parseDouble(df.format(balance))+" in this bank\n"
+                        +"You have $"+nf.format(balance)+" in this bank\n"
                         +"Your email address is "+email+"\n"
                         +"Please contact system admin for your password\n"
                         +"Thank you for choosing Revature Bank!"
@@ -282,6 +291,7 @@ public class Bank {
             //asking the user how much to transfer over
             System.out.println("How much would you like to give them?");
             df.setRoundingMode(RoundingMode.DOWN);
+
             Double money = -0.01;
             while(money<0)
                 try{
@@ -348,7 +358,10 @@ public class Bank {
         java.util.Date date = new java.util.Date();
         //every time something happens have this write something to that table
         df.setRoundingMode(RoundingMode.DOWN);
-        result = "You "+transactionType+" $"+Double.parseDouble(df.format(amount))+" on "+date.toString()+" at "+java.time.LocalTime.now();
+        nf.setMaximumFractionDigits(2);
+        nf.setMinimumFractionDigits(2);
+        nf.setRoundingMode(RoundingMode.DOWN);
+        result = "You "+transactionType+" $"+nf.format(amount)+" on "+date.toString()+" at "+java.time.LocalTime.now();
 
         Statement lookup = null;
         try {
